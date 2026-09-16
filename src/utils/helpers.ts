@@ -4,17 +4,20 @@
 
 import { format, formatDistanceToNow, parseISO } from 'date-fns';
 
-export function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string | null): string {
+  if (!dateStr) return '';
   const date = parseISO(dateStr);
   return format(date, 'MMMM d, yyyy');
 }
 
-export function formatTimeAgo(dateStr: string): string {
+export function formatTimeAgo(dateStr: string | null): string {
+  if (!dateStr) return '';
   const date = parseISO(dateStr);
   return formatDistanceToNow(date, { addSuffix: true });
 }
 
-export function formatShortDate(dateStr: string): string {
+export function formatShortDate(dateStr: string | null): string {
+  if (!dateStr) return '';
   const date = parseISO(dateStr);
   return format(date, 'MMM d');
 }

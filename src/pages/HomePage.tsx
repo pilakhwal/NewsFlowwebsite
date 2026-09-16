@@ -2,7 +2,8 @@
 // HOME PAGE
 // ============================================================
 
-import { ARTICLES, CATEGORIES } from '../data/articles';
+import { CATEGORIES } from '../data/articles';
+import { useContent } from '../context/ContentContext';
 import { HeroArticle } from '../components/HeroArticle';
 import { ArticleCard } from '../components/ArticleCard';
 import { BreakingNews } from '../components/BreakingNews';
@@ -11,10 +12,12 @@ import { Newsletter } from '../components/Newsletter';
 import { Link } from 'react-router-dom';
 
 export function HomePage() {
-  const featuredArticle = ARTICLES.find(a => a.isFeatured && a.isBreaking) || ARTICLES[0];
-  const featuredArticles = ARTICLES.filter(a => a.isFeatured && a.id !== featuredArticle.id);
-  const latestArticles = ARTICLES.filter(a => !a.isFeatured).slice(0, 6);
-  const breakingArticles = ARTICLES.filter(a => a.isBreaking);
+  const { publishedArticles } = useContent();
+  
+  const featuredArticle = publishedArticles.find(a => a.isFeatured && a.isBreaking) || publishedArticles[0];
+  const featuredArticles = publishedArticles.filter(a => a.isFeatured && a.id !== featuredArticle?.id);
+  const latestArticles = publishedArticles.filter(a => !a.isFeatured).slice(0, 6);
+  const breakingArticles = publishedArticles.filter(a => a.isBreaking);
 
   return (
     <div className="space-y-12">
@@ -57,7 +60,7 @@ export function HomePage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          <TrendingSidebar articles={ARTICLES} />
+          <TrendingSidebar articles={publishedArticles} />
           <Newsletter />
         </div>
       </div>
@@ -77,7 +80,7 @@ export function HomePage() {
                 {cat.name}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                {ARTICLES.filter(a => a.category === cat.slug).length} articles
+                {publishedArticles.filter((a: any) => a.category === cat.slug).length} articles
               </p>
             </Link>
           ))}

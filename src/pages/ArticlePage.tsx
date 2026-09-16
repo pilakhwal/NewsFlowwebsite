@@ -5,13 +5,54 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, User, Calendar, Share2, Bookmark, Tag } from 'lucide-react';
-import { ARTICLES, CATEGORIES } from '../data/articles';
+import { ARTICLES, CATEGORIES, getArticleBySlug } from '../data/articles';
 import { ArticleCard } from '../components/ArticleCard';
 import { formatDate, formatTimeAgo } from '../utils/helpers';
+import { useEffect } from 'react';
 
 export function ArticlePage() {
   const { slug } = useParams<{ slug: string }>();
-  const article = ARTICLES.find(a => a.slug === slug);
+  const article = slug ? getArticleBySlug(slug) : undefined;
+
+  // SEO metadata
+  useEffect(() => {
+    if (article) {
+      document.title = `${article.title} | NewsFlow`;
+      
+      // Meta description
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', article.excerpt);
+
+      // Open Graph
+      const ogTags: Record<string, string> = {
+        'og:title': article.title,
+        'og:description': article.excerpt,
+        'og:image': article.imageUrl,
+        'og:type': 'article',
+        'article:published_time': article.publishedAt || '',
+        'article:author': article.author.name,
+        'article:section': article.category,
+      };
+      Object.entries(ogTags).forEach(([prop, content]) => {
+        if (!content) return;
+        let tag = document.querySelector(`meta[property="${prop}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('property', prop);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      });
+    }
+    return () => {
+      document.title = 'NewsFlow — Your Daily News Source';
+    };
+  }, [article]);
 
   if (!article) {
     return (
@@ -59,12 +100,12 @@ export function ArticlePage() {
           <p className="text-xl text-slate-600 dark:text-slate-300 font-medium mb-4">{article.subtitle}</p>
         )}
         <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400 pb-6 border-b border-slate-200 dark:border-slate-700">
-          <span className="flex items-center gap-1.5">
+          <Link to={`/author/${article.authorId}`} className="flex items-center gap-1.5 hover:text-red-500 transition-colors">
             <div className="w-8 h-8 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
               {article.author.avatar}
             </div>
             <span className="font-medium text-slate-700 dark:text-slate-300">{article.author.name}</span>
-          </span>
+          </Link>
           <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4" />{formatDate(article.publishedAt)}</span>
           <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" />{article.readTime} min read</span>
           <span className="text-xs">{formatTimeAgo(article.publishedAt)}</span>
@@ -109,12 +150,13 @@ export function ArticlePage() {
         <div className="flex flex-wrap items-center gap-2 mb-8 pb-8 border-b border-slate-200 dark:border-slate-700">
           <Tag className="w-4 h-4 text-slate-400" />
           {article.tags.map(tag => (
-            <span
+            <Link
               key={tag}
-              className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm rounded-full"
+              to={`/tag/${tag}`}
+              className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-sm rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-500 transition-colors"
             >
               #{tag}
-            </span>
+            </Link>
           ))}
         </div>
       )}
