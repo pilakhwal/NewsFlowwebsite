@@ -19,6 +19,7 @@ import { AdminLayout } from './pages/admin/AdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminArticlesList } from './pages/admin/AdminArticlesList';
 import { AdminArticleEditor } from './pages/admin/AdminArticleEditor';
+import { TestPage } from './pages/TestPage';
 
 function PublicLayout() {
   return (
@@ -35,6 +36,7 @@ function PublicLayout() {
               <Route path="/author/:id" element={<AuthorPage />} />
               <Route path="/tag/:tag" element={<TagPage />} />
               <Route path="/subscribe" element={<SubscribePage />} />
+              <Route path="/test" element={<TestPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
@@ -42,24 +44,6 @@ function PublicLayout() {
         <Footer />
       </div>
     </ContentProvider>
-  );
-}
-
-function AdminRoutes() {
-  return (
-    <AuthProvider>
-      <Routes>
-        <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="articles" element={<AdminArticlesList />} />
-          <Route path="articles/new" element={<AdminArticleEditor />} />
-          <Route path="articles/:id/edit" element={<AdminArticleEditor />} />
-          <Route path="analytics" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Analytics</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />
-          <Route path="settings" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Settings</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />
-        </Route>
-      </Routes>
-    </AuthProvider>
   );
 }
 
@@ -99,10 +83,23 @@ export default function App() {
   return (
     <ThemeProvider>
       <HashRouter>
-        <Routes>
-          <Route path="/admin/*" element={<AdminRoutes />} />
-          <Route path="/*" element={<PublicLayout />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="articles" element={<AdminArticlesList />} />
+              <Route path="articles/new" element={<AdminArticleEditor />} />
+              <Route path="articles/:id/edit" element={<AdminArticleEditor />} />
+              <Route path="analytics" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Analytics</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />
+              <Route path="settings" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Settings</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />
+            </Route>
+            
+            {/* Public Routes */}
+            <Route path="/*" element={<PublicLayout />} />
+          </Routes>
+        </AuthProvider>
       </HashRouter>
     </ThemeProvider>
   );
