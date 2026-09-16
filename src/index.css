@@ -29,7 +29,7 @@
   background: #64748b;
 }
 
-/* Hide scrollbar for status tabs */
+/* Hide scrollbar for category nav */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -38,7 +38,7 @@
   display: none;
 }
 
-/* Line clamp utility */
+/* Line clamp utilities */
 .line-clamp-1 {
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -53,6 +53,13 @@
   overflow: hidden;
 }
 
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* Smooth transitions */
 * {
   -webkit-tap-highlight-color: transparent;
@@ -60,34 +67,31 @@
 
 /* Focus visible */
 :focus-visible {
-  outline: 2px solid #6366f1;
+  outline: 2px solid #ef4444;
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 /* Selection */
 ::selection {
-  background: #c7d2fe;
-  color: #312e81;
+  background: #fecaca;
+  color: #7f1d1d;
 }
 
 .dark ::selection {
-  background: #4338ca;
-  color: #e0e7ff;
+  background: #991b1b;
+  color: #fef2f2;
 }
 
-/* Border width 3 utility */
-.border-3 {
-  border-width: 3px;
+/* Smooth image loading */
+img {
+  transition: opacity 0.3s ease;
 }
 
-/* Animation for loading spinner */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+img[loading] {
+  opacity: 0;
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
+img:not([loading]) {
+  opacity: 1;
 }
