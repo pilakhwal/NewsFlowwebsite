@@ -1,5 +1,5 @@
 // ============================================================
-// NEWSLETTER COMPONENT
+// NEWSLETTER COMPONENT - ENHANCED DESIGN
 // ============================================================
 
 import { useState } from 'react';
@@ -23,21 +23,25 @@ export function Newsletter() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-8 text-center text-white"
+        className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-8 text-center text-white shadow-xl shadow-emerald-500/20"
       >
-        <CheckCircle className="w-12 h-12 mx-auto mb-3" />
-        <h3 className="text-xl font-bold mb-1">You're subscribed!</h3>
-        <p className="text-emerald-100 text-sm">Check your inbox for a confirmation email.</p>
+        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <CheckCircle className="w-8 h-8" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2">You're subscribed!</h3>
+        <p className="text-emerald-100">Check your inbox for a confirmation email.</p>
       </motion.div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-r from-red-500 to-rose-600 rounded-2xl p-8 text-white">
+    <div className="bg-gradient-to-br from-brand-500 to-brand-700 rounded-2xl p-8 text-white shadow-xl shadow-brand-500/20">
       <div className="max-w-lg mx-auto text-center">
-        <Mail className="w-10 h-10 mx-auto mb-3 opacity-90" />
-        <h3 className="text-xl font-bold mb-1">Stay Informed</h3>
-        <p className="text-red-100 text-sm mb-5">Get the top stories delivered to your inbox every morning.</p>
+        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Mail className="w-8 h-8" />
+        </div>
+        <h3 className="text-2xl font-bold mb-2">Stay Informed</h3>
+        <p className="text-brand-100 mb-6">Get the top stories delivered to your inbox every morning.</p>
         <form onSubmit={handleSubmit} className="flex gap-2">
           <input
             type="email"
@@ -49,12 +53,12 @@ export function Newsletter() {
           />
           <button
             type="submit"
-            className="px-6 py-3 bg-white text-red-600 font-semibold rounded-lg hover:bg-red-50 transition-colors shadow-sm"
+            className="px-6 py-3 bg-white text-brand-600 font-semibold rounded-lg hover:bg-brand-50 transition-colors shadow-lg"
           >
             Subscribe
           </button>
         </form>
-        <p className="text-xs text-red-200 mt-3">No spam. Unsubscribe anytime.</p>
+        <p className="text-xs text-brand-200 mt-3">No spam. Unsubscribe anytime.</p>
       </div>
     </div>
   );
