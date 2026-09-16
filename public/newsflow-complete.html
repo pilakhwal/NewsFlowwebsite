@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewsFlow — Complete Website (Single File)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  :root {
+    --brand-500: #ef4444;
+    --brand-600: #dc2626;
+    --brand-700: #b91c1c;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--slate-50);
+    color: var(--slate-800);
+    line-height: 1.6;
+  }
+  
+  /* HEADER */
+  .header {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--slate-200);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    border-bottom: 1px solid var(--slate-100);
+    padding: 0 24px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--slate-500);
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .header-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .logo-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  }
+  .logo-text {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .logo-text span { color: var(--brand-600); }
+  .logo-sub { font-size: 11px; color: var(--slate-500); margin-top: -4px; font-weight: 500; }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-600);
+    transition: all 0.2s;
+    font-size: 18px;
+  }
+  .btn-icon:hover { background: var(--slate-100); color: var(--brand-600); }
+  .btn-subscribe {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(239,68,68,0.25);
+    transition: all 0.2s;
+  }
+  .btn-subscribe:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(239,68,68,0.35); }
+  
+  /* CATEGORY NAV */
+  .cat-nav {
+    border-top: 1px solid var(--slate-100);
+    background: rgba(248,250,252,0.5);
+    padding: 0 24px;
+  }
+  .cat-nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    height: 44px;
+    align-items: center;
+    overflow-x: auto;
+  }
+  .cat-link {
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--slate-600);
+    text-decoration: none;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cat-link:hover { background: white; color: var(--brand-600); }
+  
+  /* HERO */
+  .hero {
+    max-width: 1280px;
+    margin: 32px auto;
+    padding: 0 24px;
+  }
+  .hero-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--slate-900);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .hero-card:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+  .hero-img {
+    width: 100%;
+    aspect-ratio: 21/9;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.7s;
+  }
+  .hero-card:hover .hero-img { transform: scale(1.05); }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+  }
+  .hero-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 48px;
+    color: white;
+  }
+  .hero-badges { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .badge {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-breaking { background: var(--brand-600); animation: pulse 2s infinite; }
+  .badge-cat { background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+  .hero-title {
+    font-family: Georgia, serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .hero-subtitle { font-size: clamp(16px, 2vw, 22px); color: #e2e8f0; font-weight: 500; margin-bottom: 12px; }
+  .hero-excerpt { font-size: 16px; color: #cbd5e1; max-width: 800px; line-height: 1.6; }
+  .hero-meta { display: flex; gap: 20px; margin-top: 20px; font-size: 14px; color: #cbd5e1; flex-wrap: wrap; align-items: center; }
+  .hero-author { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f87171, #dc2626);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+  }
+  
+  /* BREAKING TICKER */
+  .ticker {
+    max-width: 1280px;
+    margin: 0 auto 24px;
+    padding: 0 24px;
+  }
+  .ticker-inner {
+    background: linear-gradient(135deg, var(--brand-600), var(--brand-700));
+    border-radius: 12px;
+    padding: 0 20px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: white;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(220,38,38,0.25);
+  }
+  .ticker-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .ticker-icon {
+    width: 28px;
+    height: 28px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 1.5s infinite;
+  }
+  .ticker-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.3); flex-shrink: 0; }
+  .ticker-scroll { flex: 1; overflow: hidden; }
+  .ticker-track { display: flex; gap: 48px; white-space: nowrap; animation: scroll 30s linear infinite; }
+  @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .ticker-item { font-size: 14px; font-weight: 600; }
+  
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 64px;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 40px;
+  }
+  @media (max-width: 1024px) { .main { grid-template-columns: 1fr; } }
+  
+  /* SECTION */
+  .section { margin-bottom: 56px; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--slate-900);
+  }
+  .section-link { font-size: 13px; font-weight: 600; color: var(--brand-600); text-decoration: none; }
+  .section-link:hover { text-decoration: underline; }
+  
+  /* FEATURED GRID */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 768px) { .featured-grid { grid-template-columns: 1fr; } }
+  
+  /* ARTICLE CARD */
+  .card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+  .card-img-wrap { aspect-ratio: 16/10; overflow: hidden; position: relative; }
+  .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+  .card:hover .card-img { transform: scale(1.05); }
+  .card-cat-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 5px 10px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .card-body { padding: 18px; }
+  .card-title {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--slate-800);
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card:hover .card-title { color: var(--brand-600); }
+  .card-excerpt {
+    font-size: 13px;
+    color: var(--slate-500);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .card-meta { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--slate-500); }
+  .avatar-sm {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f87171, #dc2626);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+  }
+  
+  /* HORIZONTAL CARD */
+  .hcard {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 18px;
+  }
+  .hcard:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+  .hcard-img-wrap { width: 280px; flex-shrink: 0; overflow: hidden; }
+  .hcard-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; min-height: 180px; }
+  .hcard:hover .hcard-img { transform: scale(1.05); }
+  .hcard-body { padding: 20px; display: flex; flex-direction: column; justify-content: center; flex: 1; }
+  .hcard-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .hcard-title { font-size: 20px; font-weight: 700; line-height: 1.3; color: var(--slate-800); margin-bottom: 6px; }
+  .hcard:hover .hcard-title { color: var(--brand-600); }
+  .hcard-subtitle { font-size: 14px; color: var(--slate-600); font-weight: 500; margin-bottom: 8px; }
+  .hcard-excerpt { font-size: 14px; color: var(--slate-500); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 14px; }
+  .hcard-meta { display: flex; gap: 16px; font-size: 12px; color: var(--slate-500); flex-wrap: wrap; align-items: center; }
+  @media (max-width: 640px) { .hcard { flex-direction: column; } .hcard-img-wrap { width: 100%; height: 200px; } }
+  
+  /* SIDEBAR */
+  .sidebar { display: flex; flex-direction: column; gap: 24px; }
+  .widget {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--slate-200);
+    margin-bottom: 20px;
+  }
+  .widget-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+  }
+  .widget-title { font-size: 17px; font-weight: 700; color: var(--slate-800); }
+  
+  .trending-item { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--slate-100); cursor: pointer; text-decoration: none; color: inherit; }
+  .trending-item:last-child { border-bottom: none; }
+  .trending-item:hover .trending-title { color: var(--brand-600); }
+  .trending-num { font-size: 28px; font-weight: 700; color: var(--slate-200); width: 36px; flex-shrink: 0; line-height: 1; }
+  .trending-item:hover .trending-num { color: var(--brand-500); }
+  .trending-cat { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .trending-title { font-size: 13px; font-weight: 600; color: var(--slate-700); line-height: 1.4; margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .trending-meta { font-size: 11px; color: var(--slate-400); margin-top: 4px; }
+  
+  /* NEWSLETTER WIDGET */
+  .newsletter {
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    color: white;
+    border: none;
+  }
+  .newsletter-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 24px;
+  }
+  .newsletter h3 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .newsletter p { font-size: 13px; opacity: 0.9; margin-bottom: 18px; }
+  .newsletter-form { display: flex; gap: 8px; }
+  .newsletter-input {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 9px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 14px;
+    outline: none;
+    backdrop-filter: blur(8px);
+  }
+  .newsletter-input::placeholder { color: rgba(255,255,255,0.6); }
+  .newsletter-btn {
+    padding: 11px 20px;
+    background: white;
+    color: var(--brand-600);
+    border: none;
+    border-radius: 9px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .newsletter-btn:hover { background: var(--slate-50); }
+  .newsletter-note { font-size: 11px; opacity: 0.7; margin-top: 10px; }
+  
+  /* CATEGORIES GRID */
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 768px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .cat-card {
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: 14px;
+    padding: 22px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .cat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+  .cat-card:hover .cat-card-name { color: var(--brand-600); }
+  .cat-card-icon { font-size: 36px; margin-bottom: 10px; transition: transform 0.3s; }
+  .cat-card:hover .cat-card-icon { transform: scale(1.1); }
+  .cat-card-name { font-weight: 700; color: var(--slate-800); margin-bottom: 3px; transition: color 0.2s; }
+  .cat-card-count { font-size: 12px; color: var(--slate-500); }
+  
+  /* FOOTER */
+  .footer {
+    background: var(--slate-900);
+    color: var(--slate-300);
+    margin-top: 64px;
+  }
+  .footer-newsletter {
+    border-bottom: 1px solid var(--slate-800);
+    padding: 48px 24px;
+    text-align: center;
+  }
+  .footer-newsletter-inner { max-width: 600px; margin: 0 auto; }
+  .footer-newsletter-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 8px 24px rgba(239,68,68,0.3);
+  }
+  .footer-newsletter h3 { font-size: 24px; font-weight: 700; color: white; margin-bottom: 6px; }
+  .footer-newsletter p { color: var(--slate-400); margin-bottom: 20px; }
+  .footer-form { display: flex; gap: 8px; max-width: 440px; margin: 0 auto; }
+  .footer-input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--slate-700);
+    background: var(--slate-800);
+    color: white;
+    font-size: 14px;
+    outline: none;
+  }
+  .footer-input:focus { border-color: var(--brand-500); }
+  .footer-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  }
+  .footer-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  @media (max-width: 768px) { .footer-main { grid-template-columns: 1fr 1fr; } }
+  .footer-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .footer-brand-text { font-size: 20px; font-weight: 700; color: white; }
+  .footer-brand-text span { color: var(--brand-400); }
+  .footer-desc { font-size: 13px; color: var(--slate-400); line-height: 1.6; margin-bottom: 20px; }
+  .footer-social { display: flex; gap: 10px; }
+  .social-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--slate-800);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-400);
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  .social-btn:hover { background: var(--brand-600); color: white; }
+  .footer-col h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: white; margin-bottom: 16px; }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 10px; }
+  .footer-col a { font-size: 13px; color: var(--slate-400); text-decoration: none; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--brand-400); }
+  .footer-bottom {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px;
+    border-top: 1px solid var(--slate-800);
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--slate-500);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <span id="currentDate"></span>
+    <div style="display:flex;gap:20px;">
+      <a href="#" style="color:inherit;text-decoration:none;">Subscribe</a>
+      <a href="#" style="color:inherit;text-decoration:none;">Sign In</a>
+    </div>
+  </div>
+  <div class="header-main">
+    <a href="#" class="logo">
+      <div class="logo-icon">📰</div>
+      <div>
+        <div class="logo-text">News<span>Flow</span></div>
+        <div class="logo-sub">Your Daily News Source</div>
+      </div>
+    </a>
+    <div class="header-actions">
+      <button class="btn-icon" title="Search">🔍</button>
+      <button class="btn-icon" title="Dark Mode">🌙</button>
+      <button class="btn-subscribe">Subscribe</button>
+    </div>
+  </div>
+  <div class="cat-nav">
+    <div class="cat-nav-inner" id="catNav"></div>
+  </div>
+</header>
+
+<!-- BREAKING NEWS TICKER -->
+<div class="ticker" id="tickerWrap" style="margin-top:24px;"></div>
+
+<!-- HERO -->
+<section class="hero" id="heroSection"></section>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <div>
+    <!-- Featured -->
+    <section class="section" id="featuredSection"></section>
+    
+    <!-- Latest -->
+    <section class="section" id="latestSection"></section>
+    
+    <!-- Categories -->
+    <section class="section" id="catSection"></section>
+  </div>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar"></aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-newsletter">
+    <div class="footer-newsletter-inner">
+      <div class="footer-newsletter-icon">✉️</div>
+      <h3>Stay Informed</h3>
+      <p>Get the top stories delivered to your inbox every morning.</p>
+      <form class="footer-form" onsubmit="event.preventDefault();alert('Subscribed!');">
+        <input type="email" class="footer-input" placeholder="your@email.com" required>
+        <button type="submit" class="footer-btn">Subscribe</button>
+      </form>
+    </div>
+  </div>
+  <div class="footer-main">
+    <div>
+      <div class="footer-brand">
+        <div class="logo-icon" style="width:40px;height:40px;font-size:18px;">📰</div>
+        <div class="footer-brand-text">News<span>Flow</span></div>
+      </div>
+      <p class="footer-desc">Delivering trusted news and insightful analysis from around the world, 24/7.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn">𝕏</a>
+        <a href="#" class="social-btn">f</a>
+        <a href="#" class="social-btn">📷</a>
+        <a href="#" class="social-btn">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Categories</h4>
+      <ul id="footerCats"></ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Advertise</a></li>
+        <li><a href="#">Ethics Policy</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">Accessibility</a></li>
+        <li><a href="#">Corrections</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 NewsFlow. All rights reserved.</span>
+    <span>Built with ❤️ — Single File Edition</span>
+  </div>
+</footer>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const CATEGORIES = [
+  { slug: 'world', name: 'World', color: '#3b82f6', icon: '🌍' },
+  { slug: 'politics', name: 'Politics', color: '#8b5cf6', icon: '🏛️' },
+  { slug: 'technology', name: 'Technology', color: '#06b6d4', icon: '💻' },
+  { slug: 'business', name: 'Business', color: '#10b981', icon: '📈' },
+  { slug: 'science', name: 'Science', color: '#f59e0b', icon: '🔬' },
+  { slug: 'health', name: 'Health', color: '#ef4444', icon: '🏥' },
+  { slug: 'sports', name: 'Sports', color: '#ec4899', icon: '⚽' },
+  { slug: 'entertainment', name: 'Entertainment', color: '#a855f7', icon: '🎬' },
+  { slug: 'opinion', name: 'Opinion', color: '#64748b', icon: '💭' },
+];
+
+const AUTHORS = [
+  { id: 'a1', name: 'Sarah Mitchell', avatar: 'SM', role: 'Senior Climate Correspondent' },
+  { id: 'a2', name: 'Dr. James Chen', avatar: 'JC', role: 'Technology Editor' },
+  { id: 'a3', name: 'Michael Torres', avatar: 'MT', role: 'Economics Correspondent' },
+  { id: 'a4', name: 'Dr. Emily Watson', avatar: 'EW', role: 'Health & Science Reporter' },
+  { id: 'a5', name: 'Carlos Rodriguez', avatar: 'CR', role: 'Sports Editor' },
+  { id: 'a6', name: 'Dr. Robert Park', avatar: 'RP', role: 'Science Correspondent' },
+  { id: 'a7', name: 'Amanda Foster', avatar: 'AF', role: 'Political Correspondent' },
+  { id: 'a8', name: 'Jessica Lane', avatar: 'JL', role: 'Entertainment Reporter' },
+  { id: 'a9', name: 'David Kim', avatar: 'DK', role: 'Energy Correspondent' },
+  { id: 'a10', name: 'Prof. Maria Santos', avatar: 'MS', role: 'Contributing Columnist' },
+  { id: 'a11', name: 'Alex Rivera', avatar: 'AR', role: 'Technology Reporter' },
+  { id: 'a12', name: 'Rachel Green', avatar: 'RG', role: 'Business Correspondent' },
+];
+
+const ARTICLES = [
+  {
+    id: '1', slug: 'climate-summit', category: 'world', authorId: 'a1',
+    title: 'Global Climate Summit Reaches Historic Agreement on Carbon Emissions',
+    subtitle: 'World leaders commit to unprecedented targets in landmark deal',
+    excerpt: 'In a groundbreaking move, representatives from 195 nations have agreed to reduce carbon emissions by 60% by 2035, marking the most ambitious climate commitment in history.',
+    image: 'https://images.unsplash.com/photo-1569163139394-de4e4f43e4e3?w=1200&h=600&fit=crop',
+    tags: ['climate', 'environment'], isBreaking: true, isFeatured: true, readTime: 8, views: 45230,
+    publishedAt: '2026-01-15T09:30:00Z'
+  },
+  {
+    id: '2', slug: 'quantum-computing', category: 'technology', authorId: 'a2',
+    title: 'Quantum Computing Breakthrough Achieves Error Correction Milestone',
+    subtitle: 'Scientists demonstrate fault-tolerant quantum operations at scale',
+    excerpt: 'Researchers have achieved a major breakthrough in quantum error correction, bringing practical quantum computers significantly closer to reality.',
+    image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=600&fit=crop',
+    tags: ['quantum', 'technology'], isFeatured: true, readTime: 6, views: 32100,
+    publishedAt: '2026-01-15T08:15:00Z'
+  },
+  {
+    id: '3', slug: 'federal-reserve', category: 'business', authorId: 'a3',
+    title: 'Federal Reserve Signals Rate Cuts Amid Economic Shifts',
+    subtitle: 'Central bank indicates potential easing cycle as inflation moderates',
+    excerpt: 'The Federal Reserve has signaled a shift in monetary policy, suggesting multiple rate cuts could be on the horizon as inflation continues to moderate.',
+    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop',
+    tags: ['economy', 'federal-reserve'], readTime: 5, views: 28450,
+    publishedAt: '2026-01-15T07:45:00Z'
+  },
+  {
+    id: '4', slug: 'ai-healthcare', category: 'health', authorId: 'a4',
+    title: 'AI Revolution Transforms Healthcare Diagnostics',
+    subtitle: 'Machine learning systems now outperform specialists in early detection',
+    excerpt: 'Artificial intelligence systems are revolutionizing medical diagnostics, with new studies showing AI can detect diseases earlier and more accurately than human specialists.',
+    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&h=600&fit=crop',
+    tags: ['AI', 'healthcare'], isFeatured: true, readTime: 7, views: 38900,
+    publishedAt: '2026-01-14T16:20:00Z'
+  },
+  {
+    id: '5', slug: 'champions-league', category: 'sports', authorId: 'a5',
+    title: 'Champions League Quarterfinals Deliver Unprecedented Drama',
+    subtitle: 'Last-minute goals and shocking upsets define the competition',
+    excerpt: 'The Champions League quarterfinals produced some of the most dramatic moments in recent memory, with underdogs triumphing and favorites falling.',
+    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&h=600&fit=crop',
+    tags: ['football', 'sports'], readTime: 4, views: 52300,
+    publishedAt: '2026-01-14T22:00:00Z'
+  },
+  {
+    id: '6', slug: 'mars-water', category: 'science', authorId: 'a6',
+    title: 'Mars Mission Discovers Compelling Evidence of Ancient Water Systems',
+    subtitle: 'NASA rover finds mineral deposits suggesting vast underground rivers',
+    excerpt: "NASA's latest Mars rover has discovered mineral deposits that strongly suggest the existence of extensive underground water systems on ancient Mars.",
+    image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=1200&h=600&fit=crop',
+    tags: ['mars', 'NASA'], readTime: 6, views: 41200,
+    publishedAt: '2026-01-14T14:30:00Z'
+  },
+  {
+    id: '7', slug: 'antitrust', category: 'politics', authorId: 'a7',
+    title: 'Tech Giants Face Sweeping New Antitrust Regulations',
+    subtitle: 'Bipartisan legislation targets market dominance in digital platforms',
+    excerpt: 'Congress has passed landmark legislation aimed at curbing the market power of major technology companies.',
+    image: 'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1200&h=600&fit=crop',
+    tags: ['antitrust', 'tech'], readTime: 7, views: 29800,
+    publishedAt: '2026-01-14T11:00:00Z'
+  },
+  {
+    id: '8', slug: 'box-office', category: 'entertainment', authorId: 'a8',
+    title: 'Sci-Fi Epic Breaks Global Box Office Records in Opening Weekend',
+    subtitle: 'Film earns $450 million worldwide, highest debut in cinema history',
+    excerpt: 'The latest installment in the acclaimed science fiction franchise has shattered box office records with an unprecedented $450 million global opening weekend.',
+    image: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&h=600&fit=crop',
+    tags: ['movies', 'entertainment'], readTime: 4, views: 67500,
+    publishedAt: '2026-01-13T20:15:00Z'
+  },
+  {
+    id: '9', slug: 'renewable-energy', category: 'world', authorId: 'a9',
+    title: 'Renewable Energy Generation Surpasses Fossil Fuels for First Time',
+    subtitle: 'Historic milestone reached as clean energy capacity continues rapid expansion',
+    excerpt: 'For the first time in history, renewable energy sources have generated more electricity globally than fossil fuels.',
+    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&h=600&fit=crop',
+    tags: ['renewable', 'energy'], readTime: 6, views: 35600,
+    publishedAt: '2026-01-13T15:45:00Z'
+  },
+  {
+    id: '10', slug: 'urban-planning', category: 'opinion', authorId: 'a10',
+    title: 'Why We Must Rethink Urban Planning for the 21st Century',
+    subtitle: "Our cities were designed for a different era — it's time for a radical reimagining",
+    excerpt: 'As climate change, remote work, and demographic shifts reshape how we live, our urban environments must evolve.',
+    image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200&h=600&fit=crop',
+    tags: ['urban', 'opinion'], readTime: 9, views: 18900,
+    publishedAt: '2026-01-13T10:00:00Z'
+  },
+  {
+    id: '11', slug: 'ev-battery', category: 'technology', authorId: 'a11',
+    title: 'Startup Unveils Battery Technology That Could Double EV Range',
+    subtitle: 'Solid-state batteries achieve energy density breakthrough',
+    excerpt: 'A Silicon Valley startup has demonstrated solid-state battery technology that could double the range of electric vehicles.',
+    image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=1200&h=600&fit=crop',
+    tags: ['EV', 'batteries'], readTime: 5, views: 44100,
+    publishedAt: '2026-01-12T13:20:00Z'
+  },
+  {
+    id: '12', slug: 'trade-tensions', category: 'business', authorId: 'a12',
+    title: 'Global Trade Tensions Escalate as New Tariffs Take Effect',
+    subtitle: 'Major economies impose retaliatory measures in widening dispute',
+    excerpt: 'International trade tensions have intensified as new tariffs imposed by major economies take effect.',
+    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&h=600&fit=crop',
+    tags: ['trade', 'economy'], readTime: 5, views: 26700,
+    publishedAt: '2026-01-12T09:00:00Z'
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function getAuthor(id) { return AUTHORS.find(a => a.id === id) || AUTHORS[0]; }
+function getCat(slug) { return CATEGORIES.find(c => c.slug === slug); }
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return mins + ' min ago';
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return hrs + ' hours ago';
+  const days = Math.floor(hrs / 24);
+  return days + ' days ago';
+}
+function fmtNum(n) { return n.toLocaleString(); }
+
+// ============================================================
+// RENDER
+// ============================================================
+
+// Date
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+// Category Nav
+document.getElementById('catNav').innerHTML = CATEGORIES.map(c => 
+  `<a href="#" class="cat-link"><span>${c.icon}</span>${c.name}</a>`
+).join('');
+
+// Breaking Ticker
+const breaking = ARTICLES.filter(a => a.isBreaking);
+if (breaking.length > 0) {
+  document.getElementById('tickerWrap').innerHTML = `
+    <div class="ticker-inner">
+      <div class="ticker-label">
+        <div class="ticker-icon">⚡</div>
+        <span>Breaking</span>
+      </div>
+      <div class="ticker-divider"></div>
+      <div class="ticker-scroll">
+        <div class="ticker-track">
+          ${[...breaking, ...breaking].map(a => `<span class="ticker-item">${a.title}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Hero
+const hero = ARTICLES.find(a => a.isFeatured && a.isBreaking) || ARTICLES[0];
+const heroCat = getCat(hero.category);
+const heroAuth = getAuthor(hero.authorId);
+document.getElementById('heroSection').innerHTML = `
+  <div class="hero-card">
+    <img src="${hero.image}" alt="${hero.title}" class="hero-img">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badges">
+        ${hero.isBreaking ? '<span class="badge badge-breaking">⚡ Breaking News</span>' : ''}
+        <span class="badge badge-cat">${heroCat.icon} ${heroCat.name}</span>
+      </div>
+      <h1 class="hero-title">${hero.title}</h1>
+      <p class="hero-subtitle">${hero.subtitle}</p>
+      <p class="hero-excerpt">${hero.excerpt}</p>
+      <div class="hero-meta">
+        <div class="hero-author">
+          <div class="avatar">${heroAuth.avatar}</div>
+          <strong>${heroAuth.name}</strong>
+        </div>
+        <span>🕐 ${hero.readTime} min read</span>
+        <span>${timeAgo(hero.publishedAt)}</span>
+      </div>
+    </div>
+  </div>
+`;
+
+// Featured
+const featured = ARTICLES.filter(a => a.isFeatured && a.id !== hero.id);
+document.getElementById('featuredSection').innerHTML = `
+  <div class="section-header">
+    <h2 class="section-title">Featured Stories</h2>
+    <a href="#" class="section-link">View all →</a>
+  </div>
+  <div class="featured-grid">
+    ${featured.map(a => {
+      const cat = getCat(a.category);
+      const auth = getAuthor(a.authorId);
+      return `
+        <a href="#" class="card">
+          <div class="card-img-wrap">
+            <img src="${a.image}" alt="${a.title}" class="card-img">
+            <div class="card-cat-badge" style="color:${cat.color}">${cat.icon} ${cat.name}</div>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${a.title}</h3>
+            <p class="card-excerpt">${a.excerpt}</p>
+            <div class="card-meta">
+              <div class="avatar-sm">${auth.avatar}</div>
+              <span>${auth.name}</span>
+              <span>•</span>
+              <span>${timeAgo(a.publishedAt)}</span>
+            </div>
+          </div>
+        </a>
+      `;
+    }).join('')}
+  </div>
+`;
+
+// Latest
+const latest = ARTICLES.filter(a => !a.isFeatured).slice(0, 6);
+document.getElementById('latestSection').innerHTML = `
+  <div class="section-header">
+    <h2 class="section-title">Latest News</h2>
+  </div>
+  ${latest.map(a => {
+    const cat = getCat(a.category);
+    const auth = getAuthor(a.authorId);
+    return `
+      <a href="#" class="hcard">
+        <div class="hcard-img-wrap">
+          <img src="${a.image}" alt="${a.title}" class="hcard-img">
+        </div>
+        <div class="hcard-body">
+          <div class="hcard-cat" style="color:${cat.color}">${cat.icon} ${cat.name}</div>
+          <h3 class="hcard-title">${a.title}</h3>
+          <div class="hcard-subtitle">${a.subtitle}</div>
+          <p class="hcard-excerpt">${a.excerpt}</p>
+          <div class="hcard-meta">
+            <span style="display:flex;align-items:center;gap:6px;">
+              <div class="avatar-sm">${auth.avatar}</div>
+              <strong>${auth.name}</strong>
+            </span>
+            <span>🕐 ${a.readTime} min</span>
+            <span>${timeAgo(a.publishedAt)}</span>
+          </div>
+        </div>
+      </a>
+    `;
+  }).join('')}
+`;
+
+// Categories
+document.getElementById('catSection').innerHTML = `
+  <div class="section-header">
+    <h2 class="section-title">Explore Categories</h2>
+  </div>
+  <div class="cat-grid">
+    ${CATEGORIES.map(c => {
+      const count = ARTICLES.filter(a => a.category === c.slug).length;
+      return `
+        <a href="#" class="cat-card">
+          <div class="cat-card-icon">${c.icon}</div>
+          <div class="cat-card-name">${c.name}</div>
+          <div class="cat-card-count">${count} articles</div>
+        </a>
+      `;
+    }).join('')}
+  </div>
+`;
+
+// Sidebar - Trending
+const trending = [...ARTICLES].sort((a,b) => b.views - a.views).slice(0, 5);
+document.getElementById('sidebar').innerHTML = `
+  <div class="widget">
+    <div class="widget-header">
+      <div class="widget-icon">📈</div>
+      <div class="widget-title">Trending Now</div>
+    </div>
+    ${trending.map((a, i) => {
+      const cat = getCat(a.category);
+      return `
+        <a href="#" class="trending-item">
+          <div class="trending-num">${String(i+1).padStart(2,'0')}</div>
+          <div>
+            <div class="trending-cat" style="color:${cat.color}">${cat.name}</div>
+            <div class="trending-title">${a.title}</div>
+            <div class="trending-meta">${timeAgo(a.publishedAt)} • ${fmtNum(a.views)} views</div>
+          </div>
+        </a>
+      `;
+    }).join('')}
+  </div>
+  
+  <div class="newsletter">
+    <div class="newsletter-icon">✉️</div>
+    <h3>Stay Informed</h3>
+    <p>Get the top stories delivered to your inbox every morning.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault();this.innerHTML='<div style=padding:12px;text-align:center>✓ Subscribed!</div>';">
+      <input type="email" class="newsletter-input" placeholder="your@email.com" required>
+      <button type="submit" class="newsletter-btn">Subscribe</button>
+    </form>
+    <div class="newsletter-note">No spam. Unsubscribe anytime.</div>
+  </div>
+`;
+
+// Footer categories
+document.getElementById('footerCats').innerHTML = CATEGORIES.slice(0,6).map(c => 
+  `<li><a href="#">${c.icon} ${c.name}</a></li>`
+).join('');
+</script>
+
+</body>
+</html>
