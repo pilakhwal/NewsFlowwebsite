@@ -1,0 +1,126 @@
+// ============================================================
+// NEWS WEBSITE - AUTHORS DATA
+// ============================================================
+
+import { Author } from '../types';
+
+export const AUTHORS: Author[] = [
+  {
+    id: 'author-1',
+    name: 'Sarah Mitchell',
+    avatar: 'SM',
+    role: 'Senior Climate Correspondent',
+    bio: 'Sarah Mitchell has covered environmental policy and climate science for over 15 years. She holds a Master\'s degree in Environmental Journalism from Columbia University and has reported from over 30 countries.',
+    email: 'sarah.mitchell@newsflow.com',
+    socialLinks: { twitter: '@sarahmitchell', linkedin: 'sarahmitchell' },
+    createdAt: '2020-03-15T00:00:00Z',
+  },
+  {
+    id: 'author-2',
+    name: 'Dr. James Chen',
+    avatar: 'JC',
+    role: 'Technology Editor',
+    bio: 'Dr. James Chen leads our technology coverage with a PhD in Computer Science from MIT. He previously worked at a major Silicon Valley company before transitioning to journalism to make complex technology accessible to everyone.',
+    email: 'james.chen@newsflow.com',
+    socialLinks: { twitter: '@drjameschen' },
+    createdAt: '2019-06-01T00:00:00Z',
+  },
+  {
+    id: 'author-3',
+    name: 'Michael Torres',
+    avatar: 'MT',
+    role: 'Economics Correspondent',
+    bio: 'Michael Torres covers global economics and financial markets. With a background in investment banking and an MBA from Wharton, he brings deep analytical insight to economic reporting.',
+    email: 'michael.torres@newsflow.com',
+    createdAt: '2021-01-10T00:00:00Z',
+  },
+  {
+    id: 'author-4',
+    name: 'Dr. Emily Watson',
+    avatar: 'EW',
+    role: 'Health & Science Reporter',
+    bio: 'Dr. Emily Watson is a former physician turned journalist. She specializes in healthcare innovation, medical research, and public health policy, bringing clinical expertise to her reporting.',
+    email: 'emily.watson@newsflow.com',
+    socialLinks: { twitter: '@dremilywatson', linkedin: 'emilywatsonmd' },
+    createdAt: '2020-09-20T00:00:00Z',
+  },
+  {
+    id: 'author-5',
+    name: 'Carlos Rodriguez',
+    avatar: 'CR',
+    role: 'Sports Editor',
+    bio: 'Carlos Rodriguez has been covering sports for two decades. From the Olympics to the World Cup, he has reported from major sporting events around the globe and is known for his insightful analysis.',
+    email: 'carlos.rodriguez@newsflow.com',
+    createdAt: '2018-04-05T00:00:00Z',
+  },
+  {
+    id: 'author-6',
+    name: 'Dr. Robert Park',
+    avatar: 'RP',
+    role: 'Science Correspondent',
+    bio: 'Dr. Robert Park covers space exploration, astronomy, and fundamental physics. He holds a PhD in Astrophysics and has worked with NASA before joining our science team.',
+    email: 'robert.park@newsflow.com',
+    socialLinks: { twitter: '@drobertpark' },
+    createdAt: '2019-11-15T00:00:00Z',
+  },
+  {
+    id: 'author-7',
+    name: 'Amanda Foster',
+    avatar: 'AF',
+    role: 'Political Correspondent',
+    bio: 'Amanda Foster covers domestic and international politics with a focus on policy analysis. She previously worked at a major wire service and has interviewed heads of state on multiple continents.',
+    email: 'amanda.foster@newsflow.com',
+    createdAt: '2020-02-28T00:00:00Z',
+  },
+  {
+    id: 'author-8',
+    name: 'Jessica Lane',
+    avatar: 'JL',
+    role: 'Entertainment Reporter',
+    bio: 'Jessica Lane covers film, television, music, and popular culture. She has attended every major film festival and is known for her exclusive celebrity interviews and cultural commentary.',
+    email: 'jessica.lane@newsflow.com',
+    socialLinks: { twitter: '@jessicalane' },
+    createdAt: '2021-07-12T00:00:00Z',
+  },
+  {
+    id: 'author-9',
+    name: 'David Kim',
+    avatar: 'DK',
+    role: 'Energy Correspondent',
+    bio: 'David Kim specializes in energy policy, renewable technology, and the global transition to clean energy. He has a background in environmental engineering.',
+    email: 'david.kim@newsflow.com',
+    createdAt: '2020-08-01T00:00:00Z',
+  },
+  {
+    id: 'author-10',
+    name: 'Prof. Maria Santos',
+    avatar: 'MS',
+    role: 'Contributing Columnist',
+    bio: 'Professor Maria Santos is an urban planning expert who writes opinion pieces on cities, sustainability, and social policy. She teaches at a leading university and advises governments on urban development.',
+    email: 'maria.santos@newsflow.com',
+    socialLinks: { twitter: '@profmsantos', linkedin: 'mariasantos' },
+    createdAt: '2019-03-20T00:00:00Z',
+  },
+  {
+    id: 'author-11',
+    name: 'Alex Rivera',
+    avatar: 'AR',
+    role: 'Technology Reporter',
+    bio: 'Alex Rivera covers startups, electric vehicles, and emerging technology. He has a knack for identifying breakthrough innovations before they hit the mainstream.',
+    email: 'alex.rivera@newsflow.com',
+    createdAt: '2022-01-15T00:00:00Z',
+  },
+  {
+    id: 'author-12',
+    name: 'Rachel Green',
+    avatar: 'RG',
+    role: 'Business Correspondent',
+    bio: 'Rachel Green covers international trade, supply chains, and global business. She has reported from major economic forums and trade negotiations worldwide.',
+    email: 'rachel.green@newsflow.com',
+    createdAt: '2021-05-10T00:00:00Z',
+  },
+];
+
+export function getAuthorById(id: string): Author | undefined {
+  return AUTHORS.find(a => a.id === id);
+}
