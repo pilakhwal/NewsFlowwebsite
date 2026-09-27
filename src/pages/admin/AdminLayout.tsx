@@ -34,6 +34,8 @@ export function AdminLayout() {
     { to: '/admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
     { to: '/admin/articles', icon: FileText, label: 'Articles', end: false },
     { to: '/admin/articles/new', icon: Plus, label: 'New Article', end: true, show: canPublish() },
+    { to: '/admin/users', icon: Users, label: 'Users', end: false, show: canAdmin() },
+    { to: '/admin/audit-logs', icon: BarChart3, label: 'Audit Logs', end: false, show: canAdmin() },
     { to: '/admin/analytics', icon: BarChart3, label: 'Analytics', end: false, show: canAdmin() },
     { to: '/admin/settings', icon: Settings, label: 'Settings', end: false, show: canAdmin() },
   ];

@@ -1,15 +1,17 @@
 // ============================================================
-// ADMIN AUTHENTICATION CONTEXT
+// AUTHENTICATION CONTEXT - Connected to Backend Service
 // ============================================================
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { User, UserRole } from '../types';
+import { User } from '../types';
+import { AuthService, db } from '../backend';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   canEdit: () => boolean;
   canPublish: () => boolean;
@@ -18,46 +20,25 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Demo accounts for the CMS
-const DEMO_USERS: (User & { password: string })[] = [
-  {
-    id: 'user-1',
-    email: 'admin@newsflow.com',
-    name: 'Alex Admin',
-    role: 'super_admin',
-    avatar: 'AA',
-    password: 'admin123',
-    createdAt: '2020-01-01T00:00:00Z',
-  },
-  {
-    id: 'user-2',
-    email: 'editor@newsflow.com',
-    name: 'Emma Editor',
-    role: 'editor',
-    avatar: 'EE',
-    password: 'editor123',
-    createdAt: '2020-06-15T00:00:00Z',
-  },
-  {
-    id: 'user-3',
-    email: 'author@newsflow.com',
-    name: 'Sam Writer',
-    role: 'author',
-    avatar: 'SW',
-    password: 'author123',
-    createdAt: '2021-03-20T00:00:00Z',
-  },
-];
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem('newsflow_session');
-    if (stored) {
+    // Check for existing session
+    const sessionData = localStorage.getItem('newsflow_session');
+    if (sessionData) {
       try {
-        setUser(JSON.parse(stored));
+        const session = JSON.parse(sessionData);
+        if (session && session.id) {
+          // Verify session is still valid
+          const storedSession = AuthService.getSession(session.id);
+          if (storedSession) {
+            setUser(session);
+          } else {
+            localStorage.removeItem('newsflow_session');
+          }
+        }
       } catch {
         localStorage.removeItem('newsflow_session');
       }
@@ -65,38 +46,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = useCallback(async (email: string, password: string) => {
-    await new Promise(r => setTimeout(r, 600));
-    const found = DEMO_USERS.find(u => u.email === email && u.password === password);
-    if (!found) {
-      return { success: false, error: 'Invalid email or password' };
+  const login = useCallback(async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    await new Promise(r => setTimeout(r, 500)); // Simulate network
+    
+    const result = AuthService.login(email, password);
+    if (result.success && result.user) {
+      setUser(result.user);
+      localStorage.setItem('newsflow_session', JSON.stringify(result.user));
+      return { success: true };
     }
-    const { password: _, ...userData } = found;
-    const sessionUser: User = { ...userData, lastLogin: new Date().toISOString() };
-    setUser(sessionUser);
-    localStorage.setItem('newsflow_session', JSON.stringify(sessionUser));
-    return { success: true };
+    return { success: false, error: result.error };
+  }, []);
+
+  const register = useCallback(async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    await new Promise(r => setTimeout(r, 500));
+    
+    const result = AuthService.register(name, email, password);
+    if (result.success && result.user) {
+      setUser(result.user);
+      localStorage.setItem('newsflow_session', JSON.stringify(result.user));
+      return { success: true };
+    }
+    return { success: false, error: result.error };
   }, []);
 
   const logout = useCallback(() => {
+    if (user) {
+      AuthService.logout(user.id);
+    }
     setUser(null);
     localStorage.removeItem('newsflow_session');
-  }, []);
-
-  const canEdit = useCallback(() => {
-    if (!user) return false;
-    return ['super_admin', 'admin', 'editor', 'author'].includes(user.role);
   }, [user]);
 
-  const canPublish = useCallback(() => {
-    if (!user) return false;
-    return ['super_admin', 'admin', 'editor'].includes(user.role);
-  }, [user]);
-
-  const canAdmin = useCallback(() => {
-    if (!user) return false;
-    return ['super_admin', 'admin'].includes(user.role);
-  }, [user]);
+  const canEdit = useCallback(() => user ? AuthService.canEdit(user.role) : false, [user]);
+  const canPublish = useCallback(() => user ? AuthService.canPublish(user.role) : false, [user]);
+  const canAdmin = useCallback(() => user ? AuthService.canAdmin(user.role) : false, [user]);
 
   return (
     <AuthContext.Provider value={{
@@ -104,6 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAuthenticated: !!user,
       isLoading,
       login,
+      register,
       logout,
       canEdit,
       canPublish,
@@ -120,24 +105,24 @@ export function useAuth(): AuthContextType {
   return ctx;
 }
 
-export function getRoleLabel(role: UserRole): string {
-  const labels: Record<UserRole, string> = {
+export function getRoleLabel(role: string): string {
+  const labels: Record<string, string> = {
     super_admin: 'Super Admin',
     admin: 'Admin',
     editor: 'Editor',
     author: 'Author',
     contributor: 'Contributor',
   };
-  return labels[role];
+  return labels[role] || role;
 }
 
-export function getRoleColor(role: UserRole): string {
-  const colors: Record<UserRole, string> = {
+export function getRoleColor(role: string): string {
+  const colors: Record<string, string> = {
     super_admin: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
     admin: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
     editor: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
     author: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
     contributor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400',
   };
-  return colors[role];
+  return colors[role] || colors.contributor;
 }

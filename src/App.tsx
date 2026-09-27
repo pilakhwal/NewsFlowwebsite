@@ -19,6 +19,9 @@ import { AdminLayout } from './pages/admin/AdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminArticlesList } from './pages/admin/AdminArticlesList';
 import { AdminArticleEditor } from './pages/admin/AdminArticleEditor';
+import { AdminAuditLogs } from './pages/admin/AdminAuditLogs';
+import { AdminUsers } from './pages/admin/AdminUsers';
+import { ApiDocsPage } from './pages/ApiDocsPage';
 import { TestPage } from './pages/TestPage';
 
 function PublicLayout() {
@@ -36,6 +39,7 @@ function PublicLayout() {
               <Route path="/author/:id" element={<AuthorPage />} />
               <Route path="/tag/:tag" element={<TagPage />} />
               <Route path="/subscribe" element={<SubscribePage />} />
+              <Route path="/api-docs" element={<ApiDocsPage />} />
               <Route path="/test" element={<TestPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
@@ -92,9 +96,10 @@ export default function App() {
               <Route path="articles" element={<AdminArticlesList />} />
               <Route path="articles/new" element={<AdminArticleEditor />} />
               <Route path="articles/:id/edit" element={<AdminArticleEditor />} />
-              <Route path="analytics" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Analytics</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />
-              <Route path="settings" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Settings</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />
-            </Route>
+          <Route path="analytics" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Analytics</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="audit-logs" element={<AdminAuditLogs />} />
+          <Route path="settings" element={<div className="text-center py-20"><h1 className="text-2xl font-bold text-slate-800 dark:text-white">Settings</h1><p className="text-slate-500 dark:text-slate-400 mt-2">Coming soon</p></div>} />            </Route>
             
             {/* Public Routes */}
             <Route path="/*" element={<PublicLayout />} />
